@@ -1104,7 +1104,7 @@ StayNest integrates the following third-party services.
 
 The StayNest backend architecture is designed using industry-standard software engineering practices. It separates business logic, request handling, database operations, authentication, authorization, validation, and external integrations into dedicated modules, making the application scalable, secure, maintainable, and production-ready.
 
-## 5. Database
+s## 5. Database
 
 Database Design
 Overview
@@ -1529,6 +1529,269 @@ Subscriptions
 Notifications
 
 This database structure is optimized for scalability, maintainability, and future SaaS growth, while keeping the MVP simple enough to build and launch efficiently.
+
+
+🌐 API Design
+Overview
+
+StayNest follows a RESTful API architecture using Node.js, Express.js, and MongoDB. All APIs are role-based and secured using JWT Authentication stored in HTTP-only Cookies.
+
+User Roles
+Guest
+Student
+Hostel Owner
+Admin
+
+Each API is protected according to the authenticated user's role and permissions.
+
+🔐 Authentication APIs
+Authentication Endpoints
+POST   /api/auth/register
+POST   /api/auth/login
+POST   /api/auth/google
+POST   /api/auth/logout
+POST   /api/auth/refresh-token
+GET    /api/auth/me
+POST   /api/auth/forgot-password
+POST   /api/auth/reset-password
+Features
+Student Registration
+Owner Registration
+Google Authentication
+JWT Authentication
+HTTP-only Cookies
+Password Reset
+Secure Logout
+Refresh Token Support
+👤 User APIs
+User Profile
+GET     /api/users/profile
+PATCH   /api/users/profile
+PATCH   /api/users/change-password
+PATCH   /api/users/change-email
+POST    /api/users/upload-avatar
+DELETE  /api/users/account
+Features
+View Profile
+Update Profile
+Upload Profile Image
+Change Password
+Change Email
+Soft Delete Account
+Account Recovery Support
+🏠 Hostel APIs
+Hostel Management
+POST    /api/hostels
+GET     /api/hostels
+GET     /api/hostels/:id
+PATCH   /api/hostels/:id
+DELETE  /api/hostels/:id
+
+POST    /api/hostels/:id/images
+DELETE  /api/hostels/:id/images/:imageId
+
+PATCH   /api/hostels/:id/publish
+PATCH   /api/hostels/:id/unpublish
+Features
+Create Hostel
+Update Hostel
+Upload Images
+Publish / Unpublish Hostel
+Search Hostels
+Filter by City
+View Hostel Details
+🏠 Room APIs
+Room Management
+POST    /api/hostels/:hostelId/rooms
+GET     /api/hostels/:hostelId/rooms
+GET     /api/rooms/:roomId
+PATCH   /api/rooms/:roomId
+DELETE  /api/rooms/:roomId
+
+POST    /api/rooms/:roomId/images
+DELETE  /api/rooms/:roomId/images/:imageId
+Features
+Create Room
+Update Room
+Delete Room
+Upload Room Images
+Room Details
+💺 Seat APIs
+Seat Management
+POST    /api/rooms/:roomId/seats
+GET     /api/rooms/:roomId/seats
+GET     /api/seats/:seatId
+PATCH   /api/seats/:seatId
+DELETE  /api/seats/:seatId
+PATCH   /api/seats/:seatId/status
+Features
+Create Seat
+Update Seat
+Delete Seat
+Change Seat Status
+Seat Availability
+📖 Booking APIs
+Booking Management
+POST    /api/bookings
+GET     /api/bookings
+GET     /api/bookings/:bookingId
+PATCH   /api/bookings/:bookingId/cancel
+PATCH   /api/bookings/:bookingId/approve
+PATCH   /api/bookings/:bookingId/reject
+GET     /api/users/me/bookings
+GET     /api/owners/bookings
+Features
+Create Booking
+Cancel Booking
+Owner Approval
+Owner Rejection
+Booking History
+Booking Details
+💳 Payment APIs
+Stripe Payment
+POST   /api/payments/create-intent
+POST   /api/payments/webhook
+GET    /api/payments/:paymentId
+GET    /api/users/me/payments
+POST   /api/payments/refund
+Features
+Stripe Payment
+Payment Intent
+Webhook Verification
+Refund Processing
+Payment History
+💎 Subscription APIs
+Subscription Management
+GET    /api/subscriptions/plans
+POST   /api/subscriptions/buy
+GET    /api/subscriptions/me
+POST   /api/subscriptions/renew
+POST   /api/subscriptions/cancel
+Features
+View Plans
+Purchase Subscription
+Renew Subscription
+Cancel Subscription
+Subscription Details
+🔔 Notification APIs
+Notification Center
+GET     /api/notifications
+PATCH   /api/notifications/:id/read
+PATCH   /api/notifications/read-all
+DELETE  /api/notifications/:id
+DELETE  /api/notifications/clear
+Features
+View Notifications
+Read Notification
+Mark All as Read
+Delete Notification
+Clear Notifications
+👨‍💼 Admin APIs
+Admin Panel
+POST    /api/admin/login
+
+GET     /api/admin/dashboard
+
+GET     /api/admin/owners
+GET     /api/admin/students
+GET     /api/admin/hostels
+GET     /api/admin/bookings
+GET     /api/admin/payments
+GET     /api/admin/subscriptions
+
+PATCH   /api/admin/owners/:ownerId/approve
+PATCH   /api/admin/owners/:ownerId/reject
+
+PATCH   /api/admin/hostels/:hostelId/approve
+PATCH   /api/admin/hostels/:hostelId/reject
+
+PATCH   /api/admin/users/:userId/block
+PATCH   /api/admin/users/:userId/unblock
+Features
+Dashboard Analytics
+Owner Verification
+Hostel Approval
+User Management
+Booking Management
+Payment Monitoring
+Subscription Management
+🔒 API Security
+
+All APIs follow industry-standard security practices.
+
+Authentication
+JWT Authentication
+HTTP-only Cookies
+Refresh Token
+Secure Logout
+Authorization
+Role-Based Access Control (RBAC)
+Student Access
+Owner Access
+Admin Access
+Validation
+Request Validation
+Input Sanitization
+Duplicate Checks
+Business Rule Validation
+Security Measures
+Password Hashing (bcrypt)
+Secure Cookies
+CORS Protection
+Helmet Security
+Rate Limiting
+MongoDB Injection Protection
+XSS Protection
+📋 API Response Format
+Success Response
+{
+  "success": true,
+  "message": "Request completed successfully.",
+  "data": {}
+}
+Error Response
+{
+  "success": false,
+  "message": "Something went wrong.",
+  "error": {}
+}
+📌 API Design Principles
+
+StayNest APIs are designed using the following principles:
+
+RESTful Architecture
+Resource-Based Endpoints
+Role-Based Access Control (RBAC)
+Secure Authentication with JWT
+Stateless Request Handling
+Consistent Response Structure
+Scalable Module-Based Design
+Business Rule Validation in Backend
+Clean URL Structure
+Maintainable and Extensible Architecture
+✅ API Design Status
+✔ Authentication APIs
+
+✔ User APIs
+
+✔ Hostel APIs
+
+✔ Room APIs
+
+✔ Seat APIs
+
+✔ Booking APIs
+
+✔ Payment APIs
+
+✔ Subscription APIs
+
+✔ Notification APIs
+
+✔ Admin APIs
+🎉 API Design Completed
+
+The StayNest API architecture is fully designed following modern software engineering principles. The API layer supports secure authentication, role-based authorization, scalable resource management, payment integration, subscription handling, notifications, and administrative controls, providing a solid foundation for backend development.
 
 
 ## 6. Image Storage
