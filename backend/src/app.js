@@ -1,12 +1,17 @@
+// import required modules
 const express = require("express");
 const authRoutes = require("./routes/auth.route");
+const cookieParser = require("cookie-parser");
 
+
+// Initialize Express App
 const app = express();
 
 /* ============================
    Global Middlewares
 ============================ */
 app.use(express.json());
+app.use(cookieParser());
 
 /* ============================
    Routes
