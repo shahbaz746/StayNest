@@ -45,8 +45,6 @@ const registerUser = async (userData) => {
 // ==============================
 
 const loginUser = async (loginData) => {
-
-  // Destructure login data
   const { identifier, password } = loginData;
 
   // Remove extra spaces
@@ -67,7 +65,9 @@ const loginUser = async (loginData) => {
 
   // Blocked account
   if (user.isBlocked) {
-    throw new Error("Your account has been blocked. Please contact support.");
+    throw new Error(
+      "Your account has been blocked. Please contact support."
+    );
   }
 
   // Compare Password
@@ -99,7 +99,94 @@ const loginUser = async (loginData) => {
   };
 };
 
+// ==============================
+// Update Profile
+// ==============================
+
+const updateProfile = async (userId, userData) => {
+  const { name, phone } = userData;
+
+  // Check phone only if user is changing it
+  if (phone) {
+    const existingPhone = await User.findOne({
+      phone,
+      _id: { $ne: userId },
+    });
+
+    if (existingPhone) {
+      throw new Error("Phone number already exists.");
+    }
+  }
+
+  // Update User
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      name,
+      phone,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  // User not found
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  return user;
+};
+
+// ==============================
+// Change Password
+// ==============================
+
+const changePassword = async (
+  userId,
+  oldPassword,
+  newPassword
+) => {
+  // Find User
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  // Check Old Password
+  const isPasswordCorrect = await bcrypt.compare(
+    oldPassword,
+    user.password
+  );
+
+  if (!isPasswordCorrect) {
+    throw new Error("Old password is incorrect.");
+  }
+
+  // Hash New Password
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    10
+  );
+
+  // Update Password
+  user.password = hashedPassword;
+
+  // Save User
+  await user.save();
+
+  return true;
+};
+
+// ==============================
+// Export Services
+// ==============================
+
 module.exports = {
   registerUser,
   loginUser,
+  updateProfile,
+  changePassword,
 };

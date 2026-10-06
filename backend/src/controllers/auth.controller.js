@@ -1,26 +1,35 @@
-const { registerUser, loginUser } = require("../services/auth.service.js");
+const {
+  registerUser,
+  loginUser,
+  updateProfile: updateProfileService,
+  changePassword: changePasswordService,
+} = require("../services/auth.service.js");
 
+// ==============================
+// Register Controller
+// ==============================
 
-// register controller
 const register = async (req, res) => {
-    try {
-        const user = await registerUser(req.body);
+  try {
+    const user = await registerUser(req.body);
 
-        res.status(201).json({
-            success: true,
-            message: "User registered successfully",
-            data: user,
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: "Failed to register user",
-            error: error.message,
-        });
-    }
-}
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully.",
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to register user.",
+      error: error.message,
+    });
+  }
+};
 
-// login controller
+// ==============================
+// Login Controller
+// ==============================
 
 const login = async (req, res) => {
   try {
@@ -38,7 +47,6 @@ const login = async (req, res) => {
       message: "Login successful.",
       user,
     });
-
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -47,31 +55,110 @@ const login = async (req, res) => {
   }
 };
 
-// get profile controller
+// ==============================
+// Get Profile Controller
+// ==============================
 
 const getProfile = async (req, res) => {
   try {
-
     res.status(200).json({
       success: true,
       user: req.user,
     });
-
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 
-// export controllers
+// ==============================
+// Logout Controller
+// ==============================
+
+const logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+
+    res.status(200).json({
+      success: true,
+      message: "Logout successful.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==============================
+// Update Profile Controller
+// ==============================
+
+const updateProfile = async (req, res) => {
+  try {
+    const user = await updateProfileService(
+      req.user._id,
+      req.body
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully.",
+      user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==============================
+// Change Password Controller
+// ==============================
+
+const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Old password and new password are required.",
+      });
+    }
+
+    await changePasswordService(
+      req.user._id,
+      oldPassword,
+      newPassword
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully.",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==============================
+// Export Controllers
+// ==============================
 
 module.exports = {
-    register,
-    login,
-    getProfile,
-
+  register,
+  login,
+  getProfile,
+  logout,
+  updateProfile,
+  changePassword,
 };
